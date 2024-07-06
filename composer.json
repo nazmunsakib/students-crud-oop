@@ -1,0 +1,11 @@
+{
+    "name": "sakib/students-crud-oop",
+    "type": "project",
+    "license": "GPLv2",
+    "autoload": {
+        "psr-4": {
+            "StudentsCrud\\": "includes/"
+        }
+    },
+    "require": {}
+}
