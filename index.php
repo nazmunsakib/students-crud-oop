@@ -7,10 +7,17 @@ define('SECURE_ACCESS', true);
 require 'vendor/autoload.php';
 use StudentsCrud\Classes\Students;
 
-$students = new Students();
+$students   = new Students();
+$action     = $_GET['action'] ?? '';
 
 if( 'POST' == $_SERVER['REQUEST_METHOD'] ){
-    $students->add($_POST, $_FILES);
+    if( 'edit' == $action ){
+
+    }else{
+        $students->add($_POST, $_FILES);
+    }
+
+    header('Location: ?action=list');
 }
 ?>
 
@@ -19,24 +26,21 @@ if( 'POST' == $_SERVER['REQUEST_METHOD'] ){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Registration</title>
+    <title><?php echo "Student Registration"; ?></title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="students-crud-wrapper">
         <div class="container">
-            <div class="student-register-area">
-                <h1>Student Registration</h1>
-                <form id="record-form" method="POST" enctype="multipart/form-data">
-                    <input type="text" id="name" name="name" placeholder="Name" required>
-                    <input type="text" id="class" name="class" placeholder="Class" required>
-                    <input type="number" id="roll" name="roll" placeholder="Roll" required>
-                    <input type="text" id="email" name="email" placeholder="Email" required>
-                    <input type="file" name="image" name="image" id="image">
-                    <button type="submit">Add Record</button>
-                    <input type="hidden" id="edit-index" value="-1">
-                </form>
-            </div>
+            <?php 
+                include_once 'parts/header.php';
+
+                if( 'list' == $action ) {
+                    include_once 'parts/student-list.php';
+                }else{
+                    include_once 'parts/form.php';
+                } 
+            ?>
         </div>
     </div>
 </body>

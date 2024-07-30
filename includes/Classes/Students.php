@@ -33,4 +33,29 @@ class Students{
             echo "Error: " .$inserted_id;
         }
     }
+
+    public function get_students(){
+        $query = "SELECT * FROM students";
+        $result = $this->db->connection->query($query);
+
+        return $result;
+    }
+
+    public function get_student($id) {
+        $query  = "SELECT * FROM students WHERE id = ?";
+        $statement  = $this->db->connection->prepare($query);
+        $statement->bind_param('i', $id);
+        $statement->execute();
+        $result     = $statement->get_result();
+
+        $student   = [];
+
+        if( $data =  $result->fetch_assoc() ){
+            $student   =  $data;
+        }
+
+        $statement->close();
+
+        return $student;
+    }
 }
