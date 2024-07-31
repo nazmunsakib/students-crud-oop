@@ -9,15 +9,36 @@ use StudentsCrud\Classes\Students;
 
 $students   = new Students();
 $action     = $_GET['action'] ?? '';
+$added      = $_GET['added'] ?? false;
+$edit       = $_GET['edit'] ?? false;
+$massage    = '';
 
 if( 'POST' == $_SERVER['REQUEST_METHOD'] ){
     if( 'edit' == $action ){
-
+        $id = isset($_GET['id']) ? intval($_GET['id']) : 0 ;
+        if($id){
+            $update = $students->update_student($id, $_POST, $_FILES);
+            if( $update ){
+                header('Location: ?action=list&edit=true');
+            }else{
+                $massage    = 'Something went wrong!';
+            }
+        }
+       
     }else{
-        $students->add($_POST, $_FILES);
+        $insert_id = $students->add($_POST, $_FILES);
+        if( $insert_id ){
+            header('Location: ?action=list&added=true');
+        }else{
+            $massage    = 'Something went wrong!';
+        }
     }
+}
 
-    header('Location: ?action=list');
+if( true == $added ){
+    $massage    = 'Student Successfully added!';
+}else if( true == $edit ){
+    $massage    = 'Student Successfully updated!';
 }
 ?>
 
@@ -33,7 +54,11 @@ if( 'POST' == $_SERVER['REQUEST_METHOD'] ){
     <div class="students-crud-wrapper">
         <div class="container">
             <?php 
-                include_once 'parts/header.php';
+                include_once 'parts/header.php'; 
+
+                if( $massage ) {
+                    printf('<div class="info-msg">%s</div>',  $massage );
+                }
 
                 if( 'list' == $action ) {
                     include_once 'parts/student-list.php';

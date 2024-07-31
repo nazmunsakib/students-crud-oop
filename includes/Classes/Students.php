@@ -8,6 +8,8 @@ class Students{
 
     private $tableName = 'students';
 
+    public $massage; 
+
     public function __construct(){
         $this->db = new \Database();
     }
@@ -27,11 +29,7 @@ class Students{
         $query = "INSERT INTO $this->tableName  VALUES (NULL, '$name', '$roll','$class','$email','image')";
         $inserted_id = $this->db->insert($query);
 
-        if ( $inserted_id ) {
-            echo "New records created successfully.";
-        } else {
-            echo "Error: " .$inserted_id;
-        }
+        return $inserted_id;
     }
 
     public function get_students(){
@@ -57,5 +55,25 @@ class Students{
         $statement->close();
 
         return $student;
+    }
+
+    public function update_student($id, $data = [], $file = []){
+        $name   = $data['name'] ?? '';
+        $email  = $data['email'] ?? '';
+        $roll   = $data['roll'] ?? '';
+        $class  = $data['class'] ?? '';
+
+        $query      = "UPDATE students SET name = ?, roll = ?, class = ?, email = ? WHERE id = ?";
+        $statement  = $this->db->connection->prepare($query);
+        $statement->bind_param('sissi',$name, $roll, $class, $email, $id);
+
+        $success    = false;
+        if ($statement->execute()) {
+           $success = true;
+        }
+
+        $statement->close();
+
+        return  $success;
     }
 }
