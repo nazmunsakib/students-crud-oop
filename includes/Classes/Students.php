@@ -76,4 +76,19 @@ class Students{
 
         return  $success;
     }
+
+    public function delete_student($id){
+        $query      = "DELETE FROM students WHERE id = ?";
+        $statement  = $this->db->connection->prepare($query);
+        $statement->bind_param('i', $id);
+
+        $success    = false;
+        if ($statement->execute()) {
+           $success = true;
+        }
+
+        $statement->close();
+
+        return  $success;
+    }
 }
